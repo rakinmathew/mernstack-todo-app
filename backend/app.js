@@ -14,7 +14,7 @@ const app = express();
 const PORT = process.env.PORT || 4000;
 
 // enable cors  
-// app.use(cors());
+app.use(cors());
 
 // middleware to parse json data
 app.use(express.json());
@@ -29,13 +29,19 @@ app.use("/api/todos", todoRoutes);
 
 const __dirname = path.resolve();
 
-if (process.env.NODE_ENV === "production"){
-  app.use(express.static(path.join(__dirname,"../frontend/todo-app/dist")));
-  app.get("*",(req,res)=> {
-    res.sendFile(path.resolve(__dirname, "frontend", "dist", "index.html"));
 
+if (process.env.NODE_ENV === "production") {
+  app.use(
+    express.static(path.join(__dirname, "../frontend/todo-app/dist"))
+  );
+
+  app.get(/.*/, (req, res) => {
+    res.sendFile(
+      path.resolve(__dirname, "../frontend/todo-app/dist", "index.html")
+    );
   });
 }
+
 
  
 
