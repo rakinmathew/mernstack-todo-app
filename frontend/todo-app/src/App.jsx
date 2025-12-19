@@ -6,6 +6,9 @@ import { MdModeEditOutline } from "react-icons/md";
 import { MdOutlineDone } from "react-icons/md";
 import axios from "axios";
 
+// API based URL from vite env
+const API = import.meta.env.VITE_API_URL;
+
 const App = () => {
   const [newTodo, setNewTodo] = useState("");
   const [todos, setTodos] = useState([]);
@@ -18,7 +21,8 @@ const App = () => {
     if (!newTodo.trim()) return;
 
     try {
-      const response = await axios.post("/api/todos", { text: newTodo });
+     const response = await axios.post(`${API}/api/todos`, { text: newTodo });
+
       setTodos([...todos, response.data]);
       setNewTodo("");
     } catch (error) {
@@ -29,8 +33,9 @@ const App = () => {
   //
   const fetchTodos = async () => {
     try {
-      const response = await axios.get("/api/todos");
-      console.log(response.data);
+      const response = await axios.get(`${API}/api/todos`);
+
+      // console.log(response.data);
 
       setTodos(response.data);
     } catch (error) {
@@ -51,9 +56,10 @@ const App = () => {
   //! Save Edited todos
   const saveEdit = async (id) => {
     try {
-      const response = await axios.patch(`/api/todos/${id}`, {
+      const response = await axios.patch(`${API}/api/todos/${id}`, {
         text: editedText,
       });
+
       setTodos(todos.map((todo) => (todo._id === id ? response.data : todo)));
       setEditingTodo(null);
       setEditedText("");
@@ -65,7 +71,9 @@ const App = () => {
   //! Delete Todo
   const deleteTodo = async (id) => {
     try {
-      await axios.delete(`/api/todos/${id}`);
+     
+      await axios.delete(`${API}/api/todos/${id}`);
+
       setTodos(todos.filter((todo) => todo._id !== id));
     } catch (error) {
       console.log("Error in deleting Todos:", error);
@@ -77,7 +85,7 @@ const App = () => {
   const toggleTodo = async (id) => {
     try {
       const todo = todos.find((todo) => todo._id === id);
-      const response = await axios.patch(`/api/todos/${id}`, {
+      const response = await axios.patch(`${API}/api/todos/${id}`, {
         completed: !todo.completed,
       });
       setTodos(todos.map((todo) => (todo._id === id ? response.data : todo)));
